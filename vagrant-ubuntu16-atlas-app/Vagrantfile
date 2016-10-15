@@ -1,0 +1,76 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # box
+  boxes = {
+    box:  "ubuntu/xenial64",
+  }
+
+  config.vm.box = boxes[:box]
+
+  # provisoner
+  require 'yaml'
+  yaml_path = "./provisioners.yml"
+  if !File.exist?(yaml_path)
+    $stderr.puts("provisioners define yaml: #{yaml_path} does not exist")
+    exit 1
+  end
+  provisioner = YAML.load_file(yaml_path)
+  platform = provisioner['platform']
+  provisioning_scripts = provisioner['scripts']
+
+  # config
+  docker_port = 4243
+
+  # machines
+  machines = [
+    {
+      hostname:  "vmubu16atlas",
+      ip:  "192.168.56.175",
+#      dns_tld:  "localdomain",  # using vagrant-dns
+      #dns_patterns:  [/^ngircd.localdomain$/, /^hogefpm.localdomain$/, /^jira.localdomain$/],  # using vagrant-dns, for ngircd and php-fpm
+#      dns_patterns:  [/^ngircd.localdomain$/],
+      memory:  1536,
+      cpus:  1,
+      forwarded_ports:  {
+        25101 => 22,  # ssh
+        docker_port + 24000 => docker_port,  # docker api
+      }
+    }
+  ]
+
+  machines.each do |m|
+    config.vm.define m[:hostname] do |d|
+      d.vm.hostname = m[:hostname]
+      d.vm.network :private_network, ip: m[:ip]
+
+#      # dns
+#      d.dns.tld = m[:dns_tld]
+#      d.dns.patterns = m[:dns_patterns]
+
+      d.vm.provider :virtualbox do |vb|
+        vb.memory = m[:memory]
+        vb.cpus = m[:cpus]
+      end
+
+      m[:forwarded_ports].each do |host_port, guest_port|
+        d.vm.network :forwarded_port, host: host_port, guest: guest_port
+      end
+
+      # provisioning scripts
+      provisioning_scripts.each do |prv|
+        d.vm.provision :shell do |s|
+          s.path = "https://raw.githubusercontent.com/goldeneggg/provisioning-bash/master/facade.sh"
+          s.args = [platform, prv["name"]] + prv["args"]
+          s.privileged = prv["root"]
+        end
+      end
+    end
+  end
+end
+
+#VagrantDNS::Config.logger = Logger.new("dns-vmubu16atlas.log")
