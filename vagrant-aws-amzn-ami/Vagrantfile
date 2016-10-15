@@ -1,0 +1,71 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+# config
+go_version = "1.4.2"
+github_user = "goldeneggg"
+github_mail = "jpshadowapps@gmail.com"
+
+# provisoners
+pf = "amazon"
+provisioners = [
+  {name: "init_ja.sh", root: true, args: []},
+  {name: "cui.sh", root: true, args: []},
+  {name: "golang-src.sh", root: true, args: [go_version]},  # args = go_version
+  {name: "nodebrew-src.sh", root: false, args: []},
+  {name: "nginx.sh", root: true, args: []},
+  {name: "ruby-rbenv.sh", root: false, args: []},
+  {name: "ruby-rbenv-gems.sh", root: false, args: ["serverspec"]},
+  {name: "ruby-rbenv-rails4.sh", root: false, args: []},
+  {name: "goldeneggg.sh", root: false, args: [github_user, github_mail]}  # *need to be last*. if ssh is used instead of https, "git clone https://..." in other scripts will be error
+]
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "dummy"
+  config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+
+  config.vm.synced_folder "./", "/vagrant", disabled: true
+
+  config.vm.provider :aws do |aws, override|
+    aws.access_key_id = ENV['AWS_ACCESS_KEY_ID']
+    aws.secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
+    aws.keypair_name = ENV['AWS_KEYPAIR_NAME']
+
+    # if ENV is not set, use default value
+    aws.region = ENV['AWS_REGION'] ||= "ap-northeast-1"
+    aws.availability_zone = ENV['AWS_AVAILABILITY_ZONE'] ||= "ap-northeast-1c"
+    aws.ami = ENV['AWS_AMI_ID'] ||= "ami-cbf90ecb" # amzn-ami-hvm-2015.03.0.x86_64-gp2
+    aws.instance_type = ENV['AWS_INSTANCE_TYPE'] ||= "t2.micro"
+
+    # ssh settings
+    override.ssh.username = "ec2-user"
+    override.ssh.private_key_path = "~/.ssh/#{ENV['AWS_PRIVATE_KEY_FILE']}"
+
+    # vpc
+    aws.private_ip_address = ENV['AWS_PRIVATE_IP'] if ENV['AWS_PRIVATE_IP']
+    aws.subnet_id = ENV['AWS_SUBNET_ID'] if ENV['AWS_SUBNET_ID']
+    aws.associate_public_ip = true if ENV['AWS_SUBNET_ID']
+    aws.security_groups = ENV['AWS_SECURITY_GROUP_IDS'].split(',') if ENV['AWS_SECURITY_GROUP_IDS']
+
+    # allow sudo
+    aws.user_data = "#!/bin/sh\nsed -i 's/^.*requiretty/#Defaults requiretty/' /etc/sudoers\n"
+
+    # tags
+    if ENV["AWS_TAGS"]
+      kv_arr = ENV["AWS_TAGS"].split(/[,:]/)
+      aws.tags = Hash[*kv_arr]
+    end
+  end
+
+  # provisioning shells
+  provisioners.each do |prv|
+    config.vm.provision :shell do |s|
+      s.path = "https://raw.githubusercontent.com/goldeneggg/provisioning-bash/master/facade.sh"
+      s.args = [pf, prv[:name]] + prv[:args]
+      s.privileged = prv[:root]
+    end
+  end
+end

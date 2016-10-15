@@ -1,0 +1,60 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+# config
+master_last_octet = "111"
+repl_allow_ip = "192.168.56.%"
+repl_pw = "p4ss=Word"
+
+# machines
+vmconfs = [
+  {
+    name: "vmubu15my57mas1",
+    ip: "192.168.56.#{master_last_octet}",
+    memory: 2048,
+    cpus: 1,
+    forwarded_ports: {
+      22240 => 22,  # ssh
+      13336 => 3306  # mysql
+    }
+  }
+]
+
+pf = "ubuntu15"
+provisioners = [
+  {name: "init_ja.sh", root: true, args: []},
+  {name: "mysql57-src-mas.sh", root: true, args: [1, repl_allow_ip, repl_pw]}
+]
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/wily64"
+
+  # vm define
+  vmconfs.each do |vmconf|
+    config.vm.define vmconf[:name] do |d|
+      d.vm.hostname = vmconf[:name]
+      d.vm.network :private_network, ip: vmconf[:ip]
+      d.vm.provider :virtualbox do |vb|
+        vb.gui = false
+        vb.memory = vmconf[:memory]
+        vb.cpus = vmconf[:cpus]
+      end
+
+      vmconf[:forwarded_ports].each do |host_port, guest_port|
+        d.vm.network :forwarded_port, host: host_port, guest: guest_port
+      end
+
+      # provisioning shells
+      provisioners.each do |prv|
+        d.vm.provision :shell do |s|
+          s.path = "https://raw.githubusercontent.com/goldeneggg/provisioning-bash/master/facade.sh"
+          s.args = [pf, prv[:name]] + prv[:args]
+          s.privileged = prv[:root]
+        end
+      end
+    end
+  end
+end

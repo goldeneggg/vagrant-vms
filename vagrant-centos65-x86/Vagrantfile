@@ -1,0 +1,50 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+my_github_account = "goldeneggg"
+my_github_mail = "jpshadowapps@gmail.com"
+pf = "centos6"
+scripts = ["cui.sh", "golang.sh"]
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "centos65_x86"
+  config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v6.5.3/centos65-x86_64-20140116.box"
+
+  config.vm.define :vmcn6 do |vmcn6|
+    vmcn6.vm.hostname = "vmcn6"
+
+    # network configuration
+    vmcn6.vm.network :private_network, ip: "192.168.56.131"
+
+    # "12375 => 2375" is forward for docker remote api
+#    forward_ports = { 12375 => 2375 }
+#    forward_ports.each do |host_port, guest_port|
+#      vmcn6.vm.network :forwarded_port, host: host_port, guest: guest_port
+#    end
+
+
+    # vm customize
+    vmcn6.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", 1024]
+    end
+
+    # provisioning
+    scripts.each do |sc|
+      vmcn6.vm.provision :shell, path: "https://raw.githubusercontent.com/goldeneggg/provisioning-bash/master/facade.sh", args: [pf, sc, my_github_account, my_github_mail]
+    end
+
+    # original setup for non-privileged user
+    vmcn6.vm.provision :shell do |s|
+      s.path = "https://raw.githubusercontent.com/goldeneggg/provisioning-bash/master/facade.sh"
+      s.args = [pf, "goldeneggg.sh", my_github_account, my_github_mail]
+      s.privileged = false
+    end
+
+    # file from host machine to vm (provisioner=file)
+    #vmcn6.vm.provision :file, source: "~/.gitconfig", destination: "~/.gitconfig"
+    #vmcn6.vm.provision :file, source: "~/.ssh/id_rsa", destination: "~/.ssh/id_rsa"
+  end
+end

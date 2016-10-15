@@ -1,0 +1,74 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+# config
+master_last_octet = "111"
+master_host = "192.168.56.#{master_last_octet}"
+repl_pw = "p4ssword"
+master_server_id = 1
+
+# machines
+slave_num = 1
+vmconfs = []
+(1..slave_num).each do |i|
+  vmconfs << {
+    name: "vmubu15my57sla1",
+    ip: "192.168.56." + (master_last_octet.to_i + i).to_s,
+    memory: 2048,
+    cpus: 1,
+    forwarded_ports: {
+      22240 + i => 22,  # ssh
+      13336 + i => 3306  # mysql
+    }
+  }
+end
+
+
+# inisialize slave_server_id
+slave_server_id = master_server_id + 1  # master_server_id + 1 is assigned to first slave server id
+
+pf = "ubuntu15"
+mysql_slave_provisioner = "mysql57-src-sla.sh"
+
+provisioners = [
+  {name: "init_ja.sh", root: true, args: []},
+  {name: mysql_slave_provisioner, root: true, args: [slave_server_id, master_host, repl_pw]}
+]
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/vivid64"
+
+  # vm define
+  vmconfs.each do |vmconf|
+    config.vm.define vmconf[:name] do |d|
+      d.vm.hostname = vmconf[:name]
+      d.vm.network :private_network, ip: vmconf[:ip]
+      d.vm.provider :virtualbox do |vb|
+        vb.memory = vmconf[:memory]
+        vb.cpus = vmconf[:cpus]
+      end
+
+      vmconf[:forwarded_ports].each do |host_port, guest_port|
+        d.vm.network :forwarded_port, host: host_port, guest: guest_port
+      end
+
+      # provisioning shells
+      provisioners.each do |prv|
+        # count up slave_server_id
+        if prv[:name] == mysql_slave_provisioner
+          slave_server_id++
+          prv[:args][0] = slave_server_id
+        end
+
+        d.vm.provision :shell do |s|
+          s.path = "https://raw.githubusercontent.com/goldeneggg/provisioning-bash/master/facade.sh"
+          s.args = [pf, prv[:name]] + prv[:args]
+          s.privileged = prv[:root]
+        end
+      end
+    end
+  end
+end

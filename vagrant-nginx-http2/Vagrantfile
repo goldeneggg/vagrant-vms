@@ -1,0 +1,65 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+# machines
+vmconfs = [
+  {
+    name: "vmnginxhttp2",
+    ip: "192.168.56.170",
+    memory: 2048,
+    cpus: 1,
+    forwarded_ports: {
+      22 + 22400 => 22,  # ssh
+      80 + 12300 => 80,  # nginx
+      3000 + 10000 => 3000,  # app1
+      3001 + 10000 => 3001,  # app2
+      3003 + 10000 => 3003,  # app3
+      3099 + 10000 => 3099,  # app4
+    }
+  }
+]
+
+pf = "ubuntu14"
+provisioners = [
+  {name: "init_ja.sh", root: true, args: []},
+  {name: "cui.sh", root: true, args: []},
+  {name: "nginx-src-http2.sh", root: true, args: []},
+  {name: "redis.sh", root: true, args: []},
+  {name: "ruby-rbenv.sh", root: false, args: []},
+  {name: "nodebrew-src.sh", root: false, args: []}
+]
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu14_x86"
+  config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+
+  # vm define
+  vmconfs.each do |vmconf|
+    config.vm.define vmconf[:name] do |d|
+      d.vm.hostname = vmconf[:name]
+
+      d.vm.network :private_network, ip: vmconf[:ip]
+
+      d.vm.provider :virtualbox do |vb|
+        vb.memory = vmconf[:memory]
+        vb.cpus = vmconf[:cpus]
+      end
+
+      vmconf[:forwarded_ports].each do |host_port, guest_port|
+        d.vm.network :forwarded_port, host: host_port, guest: guest_port
+      end
+
+      # provisioning shells
+      provisioners.each do |prv|
+        d.vm.provision :shell do |s|
+          s.path = "https://raw.githubusercontent.com/goldeneggg/provisioning-bash/master/facade.sh"
+          s.args = [pf, prv[:name]] + prv[:args]
+          s.privileged = prv[:root]
+        end
+      end
+    end
+  end
+end

@@ -1,0 +1,80 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+# config
+nginx_port = 80
+docker_port = 2375
+go_version = "1.4.2"
+github_user = "goldeneggg"
+github_mail = "jpshadowapps@gmail.com"
+
+# machines
+vmconfs = [
+  {
+    name: "vmcent7app",
+    ip: "192.168.56.132",
+    dns_tld:  "localdomain",  # using vagrant-dns
+    dns_patterns:  [/^ngircd-cent7.localdomain$/],  # using vagrant-dns, for ngircd and php-fpm
+    memory: 1024,
+    cpus: 1,
+    forwarded_ports: {
+      22100 => 22,
+      nginx_port + 13200 => 80,  # nginx
+      docker_port + 21000 => docker_port  # docker api
+    }
+  }
+]
+
+# provisoners
+pf = "centos7"
+provisioners = [
+  {name: "init_ja.sh", root: true, args: []},
+  {name: "cui.sh", root: true, args: []},
+#  {name: "nginx.sh", root: true, args: []},
+  {name: "golang-src.sh", root: true, args: [go_version]},  # args = go_version
+  {name: "golang-src-gopath.sh", root: false, args: []},
+  {name: "docker-src.sh", root: true, args: [docker_port]},  # args = docker_port
+  {name: "nodebrew-src.sh", root: false, args: []},
+  {name: "goldeneggg.sh", root: false, args: [github_user, github_mail]}  # *need to be last*. if ssh is used instead of https, "git clone https://..." in other scripts will be error
+]
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # box
+  config.vm.box = "centos70_x86"
+  config.vm.box_url = "https://f0fff3908f081cb6461b407be80daf97f07ac418.googledrive.com/host/0BwtuV7VyVTSkUG1PM3pCeDJ4dVE/centos7.box"
+
+  # vm define
+  vmconfs.each do |vmconf|
+    config.vm.define vmconf[:name] do |d|
+      d.vm.hostname = vmconf[:name]
+      d.vm.network :private_network, ip: vmconf[:ip]
+
+      # dns
+      d.dns.tld = vmconf[:dns_tld]
+      d.dns.patterns = vmconf[:dns_patterns]
+
+      d.vm.provider :virtualbox do |vb|
+        vb.memory = vmconf[:memory]
+        vb.cpus = vmconf[:cpus]
+      end
+
+      vmconf[:forwarded_ports].each do |host_port, guest_port|
+        d.vm.network :forwarded_port, host: host_port, guest: guest_port
+      end
+
+      # provisioning shells
+      provisioners.each do |prv|
+        d.vm.provision :shell do |s|
+          s.path = "https://raw.githubusercontent.com/goldeneggg/provisioning-bash/master/facade.sh"
+          s.args = [pf, prv[:name]] + prv[:args]
+          s.privileged = prv[:root]
+        end
+      end
+    end
+  end
+end
+
+VagrantDNS::Config.logger = Logger.new("dns-vmcent7app.log")
