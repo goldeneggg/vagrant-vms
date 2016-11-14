@@ -22,6 +22,9 @@ scripts:
  - name: "redis.sh"
    root: true
    args: []
+ - name: "td-agent.sh"
+   root: true
+   args: []
  - name: "golang-src.sh"
    root: true
    args:
