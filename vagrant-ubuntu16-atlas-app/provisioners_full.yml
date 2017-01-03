@@ -50,6 +50,9 @@ scripts:
  - name: "ruby-rbenv-rails4.sh"
    root: false
    args: []
+ - name: "python3-anaconda.sh"
+   root: false
+   args: []
  - name: "nodebrew-src.sh"
    root: false
    args:
