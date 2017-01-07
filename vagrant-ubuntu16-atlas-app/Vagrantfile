@@ -7,7 +7,7 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # box
   boxes = {
-    box:  "ubuntu/xenial64",
+    box:  "ubuntu/yakkety64",
   }
 
   config.vm.box = boxes[:box]
