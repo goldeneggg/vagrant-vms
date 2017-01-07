@@ -30,15 +30,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   machines = [
     {
       hostname:  "vmubu16atlas",
-      ip:  "192.168.56.175",
+      ip:  "192.168.56.160",
 #      dns_tld:  "localdomain",  # using vagrant-dns
       #dns_patterns:  [/^ngircd.localdomain$/, /^hogefpm.localdomain$/, /^jira.localdomain$/],  # using vagrant-dns, for ngircd and php-fpm
 #      dns_patterns:  [/^ngircd.localdomain$/],
       memory:  1536,
       cpus:  1,
       forwarded_ports:  {
-        25101 => 22,  # ssh
-        docker_port + 24000 => docker_port,  # docker api
+        24101 => 22,  # ssh
+        docker_port + 23000 => docker_port,  # docker api
       }
     }
   ]

@@ -7,8 +7,7 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # box
   boxes = {
-    #box:  "ubuntu/wily64",
-    box:  "ubuntu/wily64-juju",
+    box:  "ubuntu/zesty64",
   }
 
   config.vm.box = boxes[:box]
@@ -30,16 +29,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # machines
   machines = [
     {
-      hostname:  "vmubu15atlas",
-      ip:  "192.168.56.150",
-      #dns_tld:  "localdomain",  # using vagrant-dns
+      hostname:  "vmubu17atlas",
+      ip:  "192.168.56.170",
+#      dns_tld:  "localdomain",  # using vagrant-dns
       #dns_patterns:  [/^ngircd.localdomain$/, /^hogefpm.localdomain$/, /^jira.localdomain$/],  # using vagrant-dns, for ngircd and php-fpm
-      #dns_patterns:  [/^ngircd.localdomain$/],
+#      dns_patterns:  [/^ngircd.localdomain$/],
       memory:  1536,
       cpus:  1,
       forwarded_ports:  {
-        23101 => 22,  # ssh
-        docker_port + 22000 => docker_port,  # docker api
+        25101 => 22,  # ssh
+        docker_port + 24000 => docker_port,  # docker api
       }
     }
   ]
@@ -49,7 +48,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       d.vm.hostname = m[:hostname]
       d.vm.network :private_network, ip: m[:ip]
 
-      # dns
+#      # dns
 #      d.dns.tld = m[:dns_tld]
 #      d.dns.patterns = m[:dns_patterns]
 
@@ -74,4 +73,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 end
 
-#VagrantDNS::Config.logger = Logger.new("dns-vmubu15atlas.log")
+#VagrantDNS::Config.logger = Logger.new("dns-vmubu16atlas.log")
