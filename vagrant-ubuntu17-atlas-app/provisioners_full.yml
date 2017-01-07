@@ -31,9 +31,11 @@ scripts:
  - name: "golang-src-gopath.sh"
    root: false
    args: []
- - name: "docker-official.sh"
+ - name: "docker-src.sh"
    root: true
    args:
+    - "1.12.5"
+    - 4243
     - "ubuntu"
  - name: "jdk8.sh"
    root: true
