@@ -34,7 +34,7 @@ scripts:
  - name: "docker-official.sh"
    root: true
    args:
-    - "vagrant"
+    - "ubuntu"
  - name: "jdk8.sh"
    root: true
    args: []
