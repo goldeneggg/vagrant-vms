@@ -28,7 +28,7 @@ scripts:
  - name: "golang-src.sh"
    root: true
    args:
-    - "1.7.1"
+    - "1.7.4"
  - name: "golang-src-gopath.sh"
    root: false
    args: []
@@ -43,7 +43,7 @@ scripts:
    root: false
    args:
     - "2.3"
-    - "1"
+    - "3"
  - name: "ruby-rbenv-gems.sh"
    root: false
    args: []
