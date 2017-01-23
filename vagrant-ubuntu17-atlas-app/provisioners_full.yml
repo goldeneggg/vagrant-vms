@@ -34,7 +34,7 @@ scripts:
  - name: "docker-src.sh"
    root: true
    args:
-    - "1.12.5"
+    - "1.13.0"
     - 4243
     - "ubuntu"
  - name: "jdk8.sh"
