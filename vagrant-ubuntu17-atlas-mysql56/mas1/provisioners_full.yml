@@ -1,0 +1,35 @@
+# platform(ubuntu14 / centos7 / amazon)
+#
+platform: "ubuntu17"
+
+# scripts : execute provisioners
+# - name: <script name>
+#   root: true  *if this script is privilledged
+#   args:
+#    - <some args1>
+#    - <some argsN>
+#   args: []  is no argument
+scripts:
+ - name: "init_ja.sh"
+   root: true
+   args: []
+ - name: "cui.sh"
+   root: true
+   args: []
+ - name: "mysql56-src-mas.sh"
+   root: true
+   args: []
+ - name: "mysql56-src-sla.sh"
+   root: true
+   args: []
+ - name: "docker-src.sh"
+   root: true
+   args:
+    - "1.13.0"
+    - 4243
+    - "ubuntu"
+ - name: "goldeneggg.sh"
+   root: false
+   args:
+    - "goldeneggg"
+    - "jpshadowapps@gmail.com"
