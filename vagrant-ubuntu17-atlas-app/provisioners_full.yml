@@ -52,7 +52,7 @@ scripts:
  - name: "python3-anaconda.sh"
    root: false
    args: []
- - name: "nodebrew-src.sh"
+ - name: "ndenv.sh"
    root: false
    args: []
  - name: "erlang-src.sh"
