@@ -34,7 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 #      dns_tld:  "localdomain",  # using vagrant-dns
       #dns_patterns:  [/^ngircd.localdomain$/, /^hogefpm.localdomain$/, /^jira.localdomain$/],  # using vagrant-dns, for ngircd and php-fpm
 #      dns_patterns:  [/^ngircd.localdomain$/],
-      memory:  1536,
+      memory:  2048,
       cpus:  1,
       forwarded_ports:  {
         25101 => 22,  # ssh
