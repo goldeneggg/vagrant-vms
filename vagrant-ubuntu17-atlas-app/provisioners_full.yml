@@ -46,7 +46,7 @@ scripts:
  - name: "ruby-rbenv-gems.sh"
    root: false
    args: []
- - name: "ruby-rbenv-rails4.sh"
+ - name: "ruby-rbenv-rails.sh"
    root: false
    args: []
  - name: "python3-anaconda.sh"
