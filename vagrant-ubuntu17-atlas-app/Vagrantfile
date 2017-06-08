@@ -34,6 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         20022 => 22,  # ssh
         20088 => 80,  # web
         24243 => 4243,  # docker api
+        28000 => 8000,  # requestbin (use 8000)
       }
     }
   ]
