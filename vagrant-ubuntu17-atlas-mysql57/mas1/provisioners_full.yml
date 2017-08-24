@@ -25,7 +25,7 @@ scripts:
  - name: "docker-src.sh"
    root: true
    args:
-    - "17.05.0-ce"
+    - "17.06.0-ce"
     - 4243
     - "ubuntu"
  - name: "goldeneggg.sh"
