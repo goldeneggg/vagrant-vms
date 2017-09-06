@@ -31,7 +31,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       memory:  2048,
       cpus:  1,
       forwarded_ports:  {
-        20022 => 22,  # ssh
         20088 => 80,  # web
         24243 => 4243,  # docker api
         28000 => 8000,  # requestbin (use 8000)
