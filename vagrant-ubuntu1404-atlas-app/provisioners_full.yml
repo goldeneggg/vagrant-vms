@@ -47,10 +47,16 @@ scripts:
  - name: "ruby-rbenv-rails4.sh"
    root: false
    args: []
+ - name: "python2.sh"
+   root: true
+   args: []
  - name: "python3-anaconda.sh"
    root: false
    args: []
  - name: "ndenv.sh"
+   root: false
+   args: []
+ - name: "yarn.sh"
    root: false
    args: []
  - name: "erlang-src.sh"
@@ -73,3 +79,6 @@ scripts:
    args:
     - "goldeneggg"
     - "jpshadowapps@gmail.com"
+ - name: "mysql56-src-mas.sh"
+   root: true
+   args: []
