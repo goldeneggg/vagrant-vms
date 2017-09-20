@@ -1,0 +1,84 @@
+# platform(ubuntu14 / centos7 / amazon)
+#
+platform: "ubuntu14"
+
+# scripts : execute provisioners
+# - name: <script name>
+#   root: true  *if this script is privilledged
+#   args:
+#    - <some args1>
+#    - <some argsN>
+#   args: []  is no argument
+scripts:
+ - name: "init_ja.sh"
+   root: true
+   args: []
+ - name: "cui.sh"
+   root: true
+   args: []
+ - name: "nginx.sh"
+   root: true
+   args: []
+ - name: "redis.sh"
+   root: true
+   args: []
+ - name: "td-agent.sh"
+   root: true
+   args: []
+ - name: "golang-src.sh"
+   root: true
+   args: []
+ - name: "golang-src-gopath.sh"
+   root: false
+   args: []
+ - name: "docker-official.sh"
+   root: true
+   args:
+    - "vagrant"
+ - name: "jdk8.sh"
+   root: true
+   args: []
+ - name: "ruby-rbenv.sh"
+   root: false
+   args: []
+ - name: "ruby-rbenv-gems.sh"
+   root: false
+   args: []
+ - name: "ruby-rbenv-rails4.sh"
+   root: false
+   args: []
+ - name: "python2.sh"
+   root: true
+   args: []
+ - name: "python3-anaconda.sh"
+   root: false
+   args: []
+ - name: "ndenv.sh"
+   root: false
+   args: []
+ - name: "yarn.sh"
+   root: false
+   args: []
+ - name: "erlang-src.sh"
+   root: true
+   args: []
+ - name: "elixir-src.sh"
+   root: true
+   args: []
+ - name: "elixir-official.sh"
+   root: true
+   args: []
+ - name: "rust-src.sh"
+   root: true
+   args: []
+ - name: "rust-official.sh"
+   root: true
+   args: []
+ - name: "goldeneggg.sh"
+   root: false
+   args:
+    - "goldeneggg"
+    - "jpshadowapps@gmail.com"
+ - name: "mysql56-src-mas.sh"
+   root: true
+   args: []
