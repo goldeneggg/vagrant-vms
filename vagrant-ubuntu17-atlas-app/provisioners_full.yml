@@ -31,13 +31,24 @@ scripts:
  - name: "golang-src-gopath.sh"
    root: false
    args: []
+ - name: "docker-official.sh"
+   root: true
+   args:
+    - "17.09.0"
+    - "ubuntu"
  - name: "docker-src.sh"
    root: true
    args:
     - "17.09.0-ce"
     - 4243
     - "ubuntu"
+ - name: "docker-compose.sh"
+   root: true
+   args: []
  - name: "jdk8.sh"
+   root: true
+   args: []
+ - name: "jdk9.sh"
    root: true
    args: []
  - name: "ruby-rbenv.sh"
