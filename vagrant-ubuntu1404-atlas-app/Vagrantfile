@@ -10,6 +10,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # require "vagrant plugin install vagrant-disksize"
   config.disksize.size = '15GB'
 
+  machines = [
+    {
+      hostname:  "vmubu1404atlas",
+      ip:  "192.168.56.144",
+      memory:  2048,
+      cpus:  1,
+      forwarded_ports:  {
+        80 => 14080,  # web
+        4243 =>  18243,  # docker api
+      }
+    }
+  ]
+
   # provisoner
   require 'yaml'
   yaml_path = "./provisioners.yml"
@@ -20,20 +33,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   provisioner = YAML.load_file(yaml_path)
   platform = provisioner['platform']
   provisioning_scripts = provisioner['scripts']
-
-  machines = [
-    {
-      hostname:  "vmubu1404atlas",
-      ip:  "192.168.56.144",
-      memory:  4096,
-      cpus:  1,
-      forwarded_ports:  {
-        14080 => 80,  # web
-        19306 => 3306,  # mysql
-#        18243 => 4243,  # docker api
-      }
-    }
-  ]
 
   machines.each do |m|
     config.vm.define m[:hostname] do |d|
