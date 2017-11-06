@@ -16,6 +16,9 @@ scripts:
  - name: "cui.sh"
    root: true
    args: []
+ - name: "networktools.sh"
+   root: true
+   args: []
  - name: "nginx.sh"
    root: true
    args: []
@@ -43,6 +46,9 @@ scripts:
     - 4243
     - "ubuntu"
  - name: "docker-compose.sh"
+   root: true
+   args: []
+ - name: "elasticsearch.sh"
    root: true
    args: []
  - name: "jdk8.sh"
