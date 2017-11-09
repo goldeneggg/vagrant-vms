@@ -8,7 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
   # require "vagrant plugin install vagrant-disksize"
-  config.disksize.size = '15GB'
+  config.disksize.size = '20GB'
 
   machines = [
     {
@@ -18,7 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       cpus:  1,
       forwarded_ports:  {
         80 => 14080,  # web
-        4243 =>  18243,  # docker api
+#        4243 =>  18243,  # docker api
       }
     }
   ]

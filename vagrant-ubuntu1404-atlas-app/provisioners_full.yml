@@ -16,6 +16,9 @@ scripts:
  - name: "cui.sh"
    root: true
    args: []
+ - name: "networktools.sh"
+   root: true
+   args: []
  - name: "nginx.sh"
    root: true
    args: []
