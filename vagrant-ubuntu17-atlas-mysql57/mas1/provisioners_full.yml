@@ -22,12 +22,14 @@ scripts:
  - name: "mysql57-src-sla.sh"
    root: true
    args: []
- - name: "docker-src.sh"
+ - name: "docker-official.sh"
    root: true
    args:
-    - "17.06.0-ce"
-    - 4243
+    - "17.09.0"
     - "ubuntu"
+ - name: "docker-compose.sh"
+   root: true
+   args: []
  - name: "goldeneggg.sh"
    root: false
    args:
