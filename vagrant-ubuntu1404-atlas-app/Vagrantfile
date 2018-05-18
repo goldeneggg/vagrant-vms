@@ -14,8 +14,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     {
       hostname:  "vmubu1404atlas",
       ip:  "192.168.56.144",
-      memory:  2048,
-      cpus:  1,
+      memory:  4096,
+      cpus:  2,
       forwarded_ports:  {
         80 => 14080,  # web
 #        4243 =>  18243,  # docker api
