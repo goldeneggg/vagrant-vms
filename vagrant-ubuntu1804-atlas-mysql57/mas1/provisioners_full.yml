@@ -25,8 +25,8 @@ scripts:
  - name: "docker-official.sh"
    root: true
    args:
-    - "18.05.0"
-    - "ubuntu"
+    - "18.05.1"
+    - "vagrant"
  - name: "docker-compose.sh"
    root: true
    args: []
