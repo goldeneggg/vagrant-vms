@@ -8,13 +8,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/bionic64"
 
   # require "vagrant plugin install vagrant-disksize"
-  config.disksize.size = '80GB'
+  config.disksize.size = '30GB'
 
   machines = [
     {
       hostname:  "vmubu18atlas",
       ip:  "192.168.56.180",
-      memory:  8192,
+      memory:  4096,
       cpus:  2,
       forwarded_ports:  {
         # 80 => 20080,    # web
