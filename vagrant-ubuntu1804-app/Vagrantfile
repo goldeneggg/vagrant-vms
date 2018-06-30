@@ -48,6 +48,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         d.vm.network :forwarded_port, host: host_port, guest: guest_port
       end
 
+      # d.vm.synced_folder ".", "/vagrant", disabled: true
+
       # provisioning scripts
       provisioning_scripts.each do |prv|
         d.vm.provision :shell do |s|
