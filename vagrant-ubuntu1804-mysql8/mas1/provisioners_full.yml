@@ -16,10 +16,10 @@ scripts:
  - name: "cui.sh"
    root: true
    args: []
- - name: "mysql8-src-mas.sh"
+ - name: "mysql80-src-mas.sh"
    root: true
    args: []
- - name: "mysql8-src-sla.sh"
+ - name: "mysql80-src-sla.sh"
    root: true
    args: []
  - name: "docker-official.sh"
